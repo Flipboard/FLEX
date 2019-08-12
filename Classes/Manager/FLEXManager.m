@@ -153,21 +153,21 @@
 
 - (void)registerSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description
 {
-# if TARGET_OS_SIMULATOR
+# if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST
     [[FLEXKeyboardShortcutManager sharedManager] registerSimulatorShortcutWithKey:key modifiers:modifiers action:action description:description];
 #endif
 }
 
 - (void)setSimulatorShortcutsEnabled:(BOOL)simulatorShortcutsEnabled
 {
-# if TARGET_OS_SIMULATOR
+# if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST
     [[FLEXKeyboardShortcutManager sharedManager] setEnabled:simulatorShortcutsEnabled];
 #endif
 }
 
 - (BOOL)simulatorShortcutsEnabled
 {
-# if TARGET_OS_SIMULATOR
+# if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST
     return [[FLEXKeyboardShortcutManager sharedManager] isEnabled];
 #else
     return NO;
@@ -377,5 +377,14 @@
         [self showExplorer];
     }
 }
+
+#if TARGET_OS_MACCATALYST
+
+- (NSArray<UIKeyCommand *> *)getKeyCommands {
+
+    return [[FLEXKeyboardShortcutManager sharedManager] getKeyCommands];
+}
+
+#endif
 
 @end

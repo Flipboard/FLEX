@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#if TARGET_OS_SIMULATOR
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST
 
 @interface FLEXKeyboardShortcutManager : NSObject
 
@@ -18,6 +18,12 @@
 - (NSString *)keyboardShortcutsDescription;
 
 @property (nonatomic, assign, getter=isEnabled) BOOL enabled;
+
+#if TARGET_OS_MACCATALYST
+
+- (NSArray<UIKeyCommand *> *)getKeyCommands;
+
+#endif
 
 @end
 
