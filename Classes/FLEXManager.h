@@ -96,4 +96,11 @@ typedef UIViewController *(^FLEXCustomContentViewerFuture)(NSData *data);
 - (void)setCustomViewerForContentType:(NSString *)contentType
             viewControllerFutureBlock:(FLEXCustomContentViewerFuture)viewControllerFutureBlock;
 
+#if TARGET_OS_MACCATALYST
+
+/// Gets the default and custom keyboard shortcuts commands.
+- (NSArray<UIKeyCommand *> *)getKeyCommands;
+
+#endif
+
 @end
