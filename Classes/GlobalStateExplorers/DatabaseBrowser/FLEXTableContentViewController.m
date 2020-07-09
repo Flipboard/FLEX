@@ -7,6 +7,7 @@
 //
 
 #import "FLEXTableContentViewController.h"
+#import "FLEXTableRowDataViewController.h"
 #import "FLEXMultiColumnTableView.h"
 #import "FLEXWebViewController.h"
 #import "FLEXUtility.h"
@@ -107,10 +108,13 @@
 #pragma mark MultiColumnTableView Delegate
 
 - (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didSelectRow:(NSInteger)row {
+    UIViewController *resultsScreen = [[FLEXTableRowDataViewController alloc] initWithTitle:[NSString stringWithFormat:@"Row %@", @(row)]
+                                                                                    rowData:[[NSDictionary alloc] initWithObjects:self.rows[row] forKeys:self.columns]];
+    [self.navigationController pushViewController:resultsScreen animated:YES];
+    return;
     NSArray<NSString *> *fields = [self.rows[row] flex_mapped:^id(NSString *field, NSUInteger idx) {
         return [NSString stringWithFormat:@"%@:\n%@", self.columns[idx], field];
     }];
-    
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title([@"Row " stringByAppendingString:@(row).stringValue]);
         NSString *message = [fields componentsJoinedByString:@"\n\n"];
