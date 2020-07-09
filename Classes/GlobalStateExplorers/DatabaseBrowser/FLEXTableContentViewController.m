@@ -33,13 +33,13 @@
 
 - (void)loadView {
     [super loadView];
-    
+
     [self.view addSubview:self.multiColumnView];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.multiColumnView reloadData];
 }
@@ -49,11 +49,11 @@
         _multiColumnView = [[FLEXMultiColumnTableView alloc]
             initWithFrame:FLEXRectSetSize(CGRectZero, self.view.frame.size)
         ];
-        
+
         _multiColumnView.dataSource = self;
         _multiColumnView.delegate   = self;
     }
-    
+
     return _multiColumnView;
 }
 
@@ -100,7 +100,7 @@
         options:NSStringDrawingUsesLineFragmentOrigin
         attributes:attrs context:nil
     ].size;
-    
+
     return size.width + 20;
 }
 
@@ -111,25 +111,12 @@
     UIViewController *resultsScreen = [[FLEXTableRowDataViewController alloc] initWithTitle:[NSString stringWithFormat:@"Row %@", @(row)]
                                                                                     rowData:[[NSDictionary alloc] initWithObjects:self.rows[row] forKeys:self.columns]];
     [self.navigationController pushViewController:resultsScreen animated:YES];
-    return;
-    NSArray<NSString *> *fields = [self.rows[row] flex_mapped:^id(NSString *field, NSUInteger idx) {
-        return [NSString stringWithFormat:@"%@:\n%@", self.columns[idx], field];
-    }];
-    [FLEXAlert makeAlert:^(FLEXAlert *make) {
-        make.title([@"Row " stringByAppendingString:@(row).stringValue]);
-        NSString *message = [fields componentsJoinedByString:@"\n\n"];
-        make.message(message);
-        make.button(@"Copy").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = message;
-        });
-        make.button(@"Dismiss").cancelStyle();
-    } showFrom:self];
 }
 
 - (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
     didSelectHeaderForColumn:(NSInteger)column
                     sortType:(FLEXTableColumnHeaderSortType)sortType {
-    
+
     NSArray<NSArray *> *sortContentData = [self.rows
         sortedArrayUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
             id a = obj1[column], b = obj2[column];
@@ -139,19 +126,19 @@
             if (b == NSNull.null) {
                 return NSOrderedDescending;
             }
-            
+
             if ([a respondsToSelector:@selector(compare:)] && [b respondsToSelector:@selector(compare:)]) {
                 return [a compare:b];
             }
-            
+
             return NSOrderedSame;
         }
     ];
-    
+
     if (sortType == FLEXTableColumnHeaderSortTypeDesc) {
         sortContentData = sortContentData.reverseObjectEnumerator.allObjects.copy;
     }
-    
+
     self.rows = sortContentData;
     [self.multiColumnView reloadData];
 }
@@ -162,7 +149,7 @@
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection
               withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
-    
+
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context) {
         if (newCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
             self.multiColumnView.frame = CGRectMake(0, 32, self.view.frame.size.width, self.view.frame.size.height - 32);
@@ -170,7 +157,7 @@
         else {
             self.multiColumnView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
         }
-        
+
         [self.view setNeedsLayout];
     } completion:nil];
 }
